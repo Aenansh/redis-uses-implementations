@@ -14,6 +14,18 @@ app.post("/banner", async (req, res) => {
   res.json({ success: true });
 });
 
+app.get("/banner", async (req, res) => {
+  const banner = await redis.get(BANNER_KEY);
+
+  res.json({ banner: banner });
+});
+
+app.delete("/banner", async (req, res) => {
+  await redis.del(BANNER_KEY);
+
+  res.json({ success: true });
+});
+
 app.get("/banner/exists", async (req, res) => {
   const exists = await redis.exists(BANNER_KEY);
 
