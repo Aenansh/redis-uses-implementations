@@ -1,0 +1,6 @@
+We can implement messaging queues using redis list
+
+- It has rpush and lpop for right to left flow
+- It has lpush and rpop for left to right flow (we used it)
+- Lost jobs can't be processed
+- We can use 2 queues for lost job processing
