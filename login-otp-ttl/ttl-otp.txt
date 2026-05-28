@@ -1,0 +1,7 @@
+uses of redis in terms of OTP:
+
+- caching OTP with time-to-live so that it can be verified fast and be deleted after use or expiration
+- TTL can be used to ban user from more attempts
+- we can count attempts before banning
+- we can store max attempts or hard code it
+- we can store created at and last attempted
