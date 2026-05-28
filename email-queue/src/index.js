@@ -1,0 +1,39 @@
+import express, { raw } from "express";
+import Redis from "ioredis";
+
+const app = express();
+app.use(express.json());
+
+const redis = new Redis("redis://localhost:6379");
+
+const QUEUE_KEY = " queue:emails";
+
+app.post("/emails", async (req, res) => {
+  const job = {
+    to: req.body.to,
+    subject: req.body.subject || "(no subject)",
+    body: req.body.body || "(no body)",
+    createdAt: new Date().toISOString(),
+  };
+
+  await redis.lpush(QUEUE_KEY, JSON.stringify(job));
+
+  res.json({ queued: true, job });
+});
+
+app.get("/emails/process-one", async (req, res) => {
+  const rawJob = await redis.rpop(QUEUE_KEY);
+  if (!rawJob) {
+    return res.json({ message: "No job in email queue currently" });
+  }
+
+  const job = JSON.parse(rawJob);
+
+  //Some job processing
+
+  res.json({ message: "Email job processed", job });
+});
+
+app.listen(3000, (req, res) => {
+  console.log("Listening on port 3000");
+});
